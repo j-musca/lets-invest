@@ -4,17 +4,12 @@ import de.hilbert.entities.Stock;
 import de.hilbert.repositories.StockRepository;
 import org.neo4j.graphdb.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.neo4j.core.GraphDatabase;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author hilbert
@@ -23,6 +18,7 @@ import java.util.List;
 @RestController
 public class HelloController {
 
+    @Qualifier("stockRepository")
     @Autowired
     StockRepository stockRepository;
 
