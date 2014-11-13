@@ -13,18 +13,15 @@ import java.io.IOException;
  * @since 31.10.14
  */
 @RestController
-public class HelloController {
+public class DashboardController {
 
-    public static Logger log = Logger.getLogger(HelloController.class);
+    public static Logger log = Logger.getLogger(DashboardController.class);
 
     @Autowired
     StockService stockService;
 
     @RequestMapping("/")
     public String index() throws IOException {
-
-        //http://stackoverflow.com/questions/10040954/alternative-to-google-finance-api
-        //http://www.jarloo.com/yahoo_finance/
 
         stockService.importSomeStocks();
         stockService.readGraph();

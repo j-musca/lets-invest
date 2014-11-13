@@ -3,11 +3,9 @@ package de.hilbert.services;
 import de.hilbert.entities.Stock;
 import de.hilbert.repositories.StockRepository;
 import org.apache.log4j.Logger;
-import org.neo4j.graphdb.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.neo4j.core.GraphDatabase;
-import org.springframework.data.neo4j.transaction.Neo4jTransactional;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
