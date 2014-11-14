@@ -30,13 +30,8 @@ public class Application extends Neo4jConfiguration {
     }
 
     public static void main(String[] args) {
-
         ApplicationContext ctx = SpringApplication.run(Application.class, args);
         String[] beanNames = ctx.getBeanDefinitionNames();
-        Arrays.sort(beanNames);
-        for (String beanName : beanNames) {
-            log.info(ctx.getBean(beanName).getClass().toString() + " as " + beanName);
-        }
         log.info("application started with " + beanNames.length + " beans");
     }
 
