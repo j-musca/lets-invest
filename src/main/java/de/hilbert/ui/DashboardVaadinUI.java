@@ -1,9 +1,8 @@
 package de.hilbert.ui;
 
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.*;
+import de.hilbert.services.CommonBootstrapService;
 import de.hilbert.services.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.VaadinUI;
@@ -20,19 +19,30 @@ public class DashboardVaadinUI extends UI {
     @Autowired
     private StockService stockService;
 
-    private Button initializationButton = new Button("Caption",
+    @Autowired
+    private CommonBootstrapService commonBootstrapService;
+
+    private Button initializationButton = new Button("Bootstrap Data",
             clickEvent -> {
-                try {
-                    stockService.importSomeStocks();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                stockService.readGraph();
+                commonBootstrapService.bootstrapStocks();
+                Notification.show("bootstrapped");
             });
+
+    private Button showStocksButton = new Button("Show Stocks",
+            clickEvent -> {
+                 Notification.show(stockService.readGraph());
+            });
+
 
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        setContent(initializationButton);
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.addComponent(initializationButton);
+        verticalLayout.addComponent(showStocksButton);
+        Label label = new Label(stockService.readGraph());
+        verticalLayout.addComponent(label);
+
+        setContent(verticalLayout);
     }
 }

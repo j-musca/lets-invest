@@ -11,5 +11,7 @@ lets-invest
 **some interesting links**
 
 
-* http://stackoverflow.com/questions/10040954/alternative-to-google-finance-api
-* http://www.jarloo.com/yahoo_finance/
+* informations about yahoo finance `http://stackoverflow.com/questions/10040954/alternative-to-google-finance-api`
+* informations about yahoo finance `http://www.jarloo.com/yahoo_finance/`
+* vaadin for spring `https://github.com/peholmst/vaadin4spring`
+* vaadin examples:  `http://demo.vaadin.com/book-examples-vaadin7/book`
