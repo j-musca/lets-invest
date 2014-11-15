@@ -1,5 +1,6 @@
 package de.hilbert.services;
 
+import com.google.gwt.thirdparty.guava.common.collect.Lists;
 import de.hilbert.entities.Stock;
 import de.hilbert.repositories.StockRepository;
 import org.apache.log4j.Logger;
@@ -33,11 +34,11 @@ public class StockService {
     @Transactional
     public Iterator<Stock> findWithOnlineUpdate(Collection<String> symbols) {
         List<Stock> stocks = yahooFinancialAPIService.getStocksFromSymbols(symbols);
-        return (Iterator<Stock>) stockRepository.save(stocks).iterator();
+        return stockRepository.save(stocks).iterator();
     }
 
-    @Transactional
-    public String readGraph() {
-        return stockRepository.findAll().toString();
+    @Transactional(readOnly = true)
+    public List<Stock> findAllStocks() {
+        return Lists.newArrayList(stockRepository.findAll().iterator());
     }
 }
