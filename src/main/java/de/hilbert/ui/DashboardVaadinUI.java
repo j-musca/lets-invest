@@ -5,6 +5,7 @@ import com.vaadin.ui.*;
 import de.hilbert.entities.Stock;
 import de.hilbert.services.CommonBootstrapService;
 import de.hilbert.services.StockService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.VaadinUI;
 
@@ -16,6 +17,8 @@ import java.util.List;
  */
 @VaadinUI
 public class DashboardVaadinUI extends UI {
+
+    public static Logger log = Logger.getLogger(DashboardVaadinUI.class);
 
     @Autowired
     private StockService stockService;
@@ -29,49 +32,69 @@ public class DashboardVaadinUI extends UI {
                 Notification.show("bootstrapped");
             });
 
+    Panel panel = new Panel();
+
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        //putting stuff together
+        VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.addComponent(createMainMenu());
+        verticalLayout.addComponent(panel);
+        changePage("");
+        setContent(verticalLayout);
+    }
+
+    private MenuBar createMainMenu() {
         MenuBar barmenu = new MenuBar();
 
-        // A feedback component
-        final Label selection = new Label("-");
-
         // Define a common menu command for all the menu items.
-        MenuBar.Command mycommand = new MenuBar.Command() {
-            public void menuSelected(MenuBar.MenuItem selectedItem) {
-                selection.setValue("Ordered a " +
-                        selectedItem.getText() +
-                        " from menu.");
-            }
-        };
+        MenuBar.Command mycommand = selectedItem -> changePage(selectedItem.getText());
 
         // Put some items in the menu hierarchically
-        MenuBar.MenuItem beverages =
-                barmenu.addItem("Beverages", null, null);
-        MenuBar.MenuItem hot_beverages =
-                beverages.addItem("Hot", null, null);
-        hot_beverages.addItem("Tea", null, mycommand);
-        hot_beverages.addItem("Coffee", null, mycommand);
-        MenuBar.MenuItem cold_beverages =
-                beverages.addItem("Cold", null, null);
-        cold_beverages.addItem("Milk", null, mycommand);
-        cold_beverages.addItem("Weissbier", null, mycommand);
+        barmenu.addItem(MENU_CAPTION_DASHBOARD, null, mycommand);
+        barmenu.addItem(MENU_CAPTION_ALL_STOCKS, null, mycommand);
+        barmenu.addItem(MENU_CAPTION_ADMINISTRATION, null, mycommand);
 
-        // Another top-level item
-        MenuBar.MenuItem snacks =
-                barmenu.addItem("Snacks", null, null);
-        snacks.addItem("Weisswurst", null, mycommand);
-        snacks.addItem("Bratwurst", null, mycommand);
-        snacks.addItem("Currywurst", null, mycommand);
+        return barmenu;
+    }
 
-        // Yet another top-level item
-        MenuBar.MenuItem services =
-                barmenu.addItem("Services", null, null);
-        services.addItem("Car Service", null, mycommand);
+    public final static String MENU_CAPTION_DASHBOARD = "Dashboard";
+    public final static String MENU_CAPTION_ALL_STOCKS = "All Stocks";
+    public final static String MENU_CAPTION_ADMINISTRATION = "Administration";
 
+    private void changePage(String menuText) {
+        switch (menuText) {
+            case MENU_CAPTION_DASHBOARD:
+                panel.setCaption(MENU_CAPTION_DASHBOARD);
+                panel.setContent(createDashboardView());
+                break;
+            case MENU_CAPTION_ALL_STOCKS:
+                panel.setCaption(MENU_CAPTION_ALL_STOCKS);
+                panel.setContent(createAllStockView());
+                break;
+            case MENU_CAPTION_ADMINISTRATION:
+                panel.setCaption(MENU_CAPTION_ADMINISTRATION);
+                panel.setContent(createAdministrationView());
+                break;
+            default:
+                panel.setCaption(MENU_CAPTION_DASHBOARD);
+                panel.setContent(createDashboardView());
+                break;
+        }
+    }
 
-        HorizontalLayout rootMenu = new HorizontalLayout();
-        rootMenu.addComponent(initializationButton);
+    private Component createAdministrationView() {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.addComponent(initializationButton);
+        return horizontalLayout;
+    }
+
+    private Component createDashboardView() {
+        return new Label("Dashboard");
+    }
+
+    private Component createAllStockView() {
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
 
         List<Stock> stocks = stockService.findAllStocks();
 
@@ -86,13 +109,7 @@ public class DashboardVaadinUI extends UI {
             table.addItem(new Object[]{stock.getSymbol(), stock.getPrice()}, stock.getId());
         }
 
-        //putting stuff together
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.addComponent(barmenu);
-        verticalLayout.addComponent(selection);
-        verticalLayout.addComponent(rootMenu);
-        verticalLayout.addComponent(table);
-
-        setContent(verticalLayout);
+        horizontalLayout.addComponent(table);
+        return horizontalLayout;
     }
 }
