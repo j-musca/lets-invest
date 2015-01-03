@@ -22,12 +22,17 @@ public class CommonBootstrapService {
 
     @Autowired
     StockRepository stockRepository;
+    
+    @Autowired
+    StockCsvImportService stockCsvImportService;
 
     @Transactional
     public void bootstrapStocks() {
         log.info("deleting existing data ...");
         stockRepository.deleteAll();
-        log.info("creating new data ...");
-        stockService.findWithOnlineUpdate(Arrays.asList("AAPL", "GOOG", "MSFT"));
+        log.info("importing companies from local csv-files ...");
+        stockCsvImportService.importStocks();
+        log.info("request data from yahoo for companies ...");
+        stockService.findAllWithOnlineUpdate();
     }
 }

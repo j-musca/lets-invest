@@ -25,7 +25,20 @@ public class YahooFinancialAPIService {
     private String BASE_URL = "http://finance.yahoo.com/d/quotes.csv";
     private String CSV_FIELDS = "sl1";
 
-    public List<Stock> getStocksFromSymbols(Collection<String> stockSymbols) {
+    public List<Stock> getStocksFromSymbols(ArrayList<String> stockSymbols) {
+
+        ArrayList<Stock> stocks = new ArrayList<>();
+
+        for (int start = 0; start < stockSymbols.size(); start += 200) {
+            int end = Math.min(start + 200, stockSymbols.size());
+            List<String> sublist = stockSymbols.subList(start, end);
+            stocks.addAll(requestCsvAndBuildStocks(sublist));
+        }
+
+        return stocks;
+    }
+
+    private ArrayList<Stock> requestCsvAndBuildStocks(Collection<String> stockSymbols) {
         ArrayList<Stock> stocks = new ArrayList<>();
         try {
             URL url = new URL(BASE_URL + buildParameterString(stockSymbols, CSV_FIELDS));

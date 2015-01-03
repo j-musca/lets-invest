@@ -9,9 +9,7 @@ import org.springframework.data.neo4j.core.GraphDatabase;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author hilbert
@@ -31,9 +29,23 @@ public class StockService {
     @Autowired
     YahooFinancialAPIService yahooFinancialAPIService;
 
+    /**
+     * @see org.springframework.data.repository.CrudRepository#save(Iterable)
+     */
+    @Transactional
+    public Iterable<Stock> save(Iterable<Stock> entities) {
+        return stockRepository.save(entities);
+    }
+    
     @Transactional
     public Iterator<Stock> findWithOnlineUpdate(Collection<String> symbols) {
-        List<Stock> stocks = yahooFinancialAPIService.getStocksFromSymbols(symbols);
+        List<Stock> stocks = yahooFinancialAPIService.getStocksFromSymbols(new ArrayList<>(symbols));
+        return stockRepository.save(stocks).iterator();
+    }
+
+    @Transactional
+    public Iterator<Stock> findAllWithOnlineUpdate() {
+        List<Stock> stocks = yahooFinancialAPIService.getStocksFromSymbols(Lists.newArrayList(stockRepository.findAllSymbols()));
         return stockRepository.save(stocks).iterator();
     }
 

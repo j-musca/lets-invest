@@ -2,6 +2,7 @@ package de.hilbert.repositories;
 
 import de.hilbert.entities.Stock;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +13,7 @@ import org.springframework.stereotype.Repository;
 @Primary
 @Repository
 public interface StockRepository extends GraphRepository<Stock> {
+
+    @Query("MATCH (n) RETURN n.symbol")
+    Iterable<String> findAllSymbols();
 }

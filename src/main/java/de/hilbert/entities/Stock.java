@@ -22,6 +22,8 @@ public class Stock {
     @Indexed(indexType = IndexType.FULLTEXT, indexName = "symbolIdx", unique = true)
     private String symbol;
 
+    private String companyName;
+
     private String price;
 
     public Long getId() {
@@ -46,5 +48,13 @@ public class Stock {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 }
